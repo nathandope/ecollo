@@ -1,0 +1,25 @@
+<Configuration status="FATAL">
+    <Appenders>
+        <Console name="STDOUT">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'}{GMT+0} %highlight{%level} %logger [%mdc] - %msg%n</Pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="akka" level="WARN"/>
+        <logger name="akka.actor.ActorSystemImpl" level="WARN"/>
+        <Logger name="org.apache.kafka" level="WARN"/>
+        <logger name="org.apache.kafka.common.utils.AppInfoParser" level="ERROR"/>
+        <logger name="org.apache.kafka.clients.NetworkClient" level="ERROR"/>
+        <logger name="kafka" level="WARN"/>
+        <logger name="org.apache.zookeeper" level="WARN"/>
+        <logger name="org.apache.flink" level="WARN"/>
+        <logger name="org.apache.hadoop" level="WARN"/>
+
+        <AsyncRoot level="DEBUG">
+            <AppenderRef ref="STDOUT"/>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,29 @@
+{
+    "namespace": "dope.nathan.ecollo.dataModels",
+    "type": "record",
+    "name": "EcoData",
+    "doc": "Ecological's metadata",
+    "fields": [
+        {
+            "name": "filePath",
+            "type": "string",
+            "doc": "Absolute path to the file including filename"
+        },
+        {
+            "name": "fileTime",
+            "type": {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+            },
+            "doc": "File's creation time"
+        },
+        {
+            "name": "id",
+            "type": {
+                "type": "string",
+                "logicalType": "uuid"
+            },
+            "doc": "File's unique identifier"
+        }
+    ]
+}
