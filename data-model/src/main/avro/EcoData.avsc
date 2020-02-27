@@ -5,25 +5,32 @@
     "doc": "Ecological's metadata",
     "fields": [
         {
-            "name": "filePath",
+            "name": "id",
             "type": "string",
-            "doc": "Absolute path to the file including filename"
+            "doc": "Data unique identifier"
         },
         {
-            "name": "fileTime",
+            "name": "location",
+            "type": "dope.nathan.ecollo.dataModels.Location",
+            "doc": "Geolocation of event"
+        },
+        {
+            "name": "time",
             "type": {
                 "type": "long",
-                "logicalType": "timestamp-millis"
+                "logicalType": "timestampMillis"
             },
-            "doc": "File's creation time"
+            "doc": "Time stamp of event"
         },
         {
-            "name": "id",
-            "type": {
-                "type": "string",
-                "logicalType": "uuid"
-            },
-            "doc": "File's unique identifier"
+            "name": "file",
+            "type": "dope.nathan.ecollo.dataModels.File",
+            "doc": "File information"
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "doc": "Description of event"
         }
     ]
 }

@@ -1,0 +1,31 @@
+{
+    "namespace": "dope.nathan.ecollo.dataModels",
+    "type": "record",
+    "name": "File",
+    "doc": "Text, photo, video etc.",
+    "fields": [
+        {
+            "name": "id",
+            "type": "string",
+            "doc": "File unique identifier"
+        },
+        {
+            "name": "path",
+            "type": "string",
+            "doc": "Absolute path to the file including filename"
+        },
+        {
+            "name": "time",
+            "type": {
+                "type": "long",
+                "logicalType": "timestampMillis"
+            },
+            "doc": "File creation time"
+        },
+        {
+            "name": "fileType",
+            "type": "string",
+            "doc": "File type"
+        }
+    ]
+}

@@ -1,0 +1,28 @@
+{
+    "namespace": "dope.nathan.ecollo.dataModels",
+    "type": "record",
+    "name": "Location",
+    "doc": "Geolocation: latitude and longitude",
+    "fields": [
+        {
+            "name": "id",
+            "type": "string",
+            "doc": "Location unique identifier"
+        },
+        {
+            "name": "lat",
+            "type": "double",
+            "doc": "Latitude of location"
+        },
+        {
+            "name": "lon",
+            "type": "double",
+            "doc": "Longitude of location"
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "doc": "Description of location"
+        }
+    ]
+}

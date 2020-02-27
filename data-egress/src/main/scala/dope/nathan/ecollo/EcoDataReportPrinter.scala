@@ -1,14 +1,18 @@
 package dope.nathan.ecollo
 
+import cloudflow.spark.sql.SQLImplicits._
 import cloudflow.spark.{SparkStreamlet, SparkStreamletLogic, _}
 import cloudflow.streamlets.StreamletShape
 import cloudflow.streamlets.avro.AvroInlet
+import dope.nathan.ecollo.dataModels.EcoData
 import org.apache.spark.sql.streaming.OutputMode
-import cloudflow.spark.sql.SQLImplicits._ // don't touch
+
 
 class EcoDataReportPrinter extends SparkStreamlet {
 
-  val in = AvroInlet[EcoData]("in")
+  System.setProperty("hadoop.home.dir", "C:\\spark-2.4.4-bin-hadoop2.7")
+
+  val in: AvroInlet[EcoData] = AvroInlet[EcoData]("in")
 
   override def shape(): StreamletShape = StreamletShape.withInlets(in)
 

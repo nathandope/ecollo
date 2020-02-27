@@ -7,6 +7,9 @@ val akkaHttpSpayJson    = "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.
 val alpakka             = "com.lightbend.akka" %% "akka-stream-alpakka-file" % "1.1.2"
 val testkit             = "com.typesafe.akka" %% "akka-http-testkit" % "10.1.11" % "test"
 
+//val hdfs                = "org.apache.hadoop" % "hadoop-hdfs" % "3.0.0"
+//val hadoopClient        = "org.apache.hadoop" % "hadoop-client" % "3.0.0"
+
 val sparkstreaming      = "org.apache.spark" %% "spark-streaming" % "2.4.2"
 val cassandraconn       = "com.datastax.spark" %% "spark-cassandra-connector" % "2.4.2"
 val sparksql            = "org.apache.spark" %% "spark-sql" % "2.4.4"
@@ -18,6 +21,7 @@ val log4jApi            = "org.apache.logging.log4j" % "log4j-api" % log4j2Versi
 val log4jSlf4j          = "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4j2Version
 val log4jCore           = "org.apache.logging.log4j" % "log4j-core" % log4j2Version
 val disruptor           = "com.lmax" % "disruptor" % "3.4.2" // for async log4j2
+val framelessDS         = "org.typelevel" %% "frameless-dataset" % "0.8.0"
 
 
 lazy val commonSettings = Seq(
@@ -77,7 +81,8 @@ lazy val dataModel = appModule("data-model")
     (sourceGenerators in Compile) += (avroScalaGenerateSpecific in Test).taskValue,
     (avroScalaCustomTypes in Compile) := {
       avrohugger.format.Standard.defaultTypes.copy(
-        timestampMillis = avrohugger.types.JavaTimeInstant
+        timestampMillis = avrohugger.types.JavaSqlTimestamp,
+        decimal = avrohugger.types.ScalaBigDecimalWithPrecision(None)
       )
     }
   )
@@ -107,7 +112,8 @@ lazy val dataEgress = appModule("data-egress")
       sparksql,
       log4jApi,
       log4jSlf4j,
-      log4jCore
+      log4jCore,
+      framelessDS
     )
   )
   .settings(
