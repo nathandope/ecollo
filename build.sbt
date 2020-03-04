@@ -21,7 +21,7 @@ val log4jApi            = "org.apache.logging.log4j" % "log4j-api" % log4j2Versi
 val log4jSlf4j          = "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4j2Version
 val log4jCore           = "org.apache.logging.log4j" % "log4j-core" % log4j2Version
 val disruptor           = "com.lmax" % "disruptor" % "3.4.2" // for async log4j2
-val framelessDS         = "org.typelevel" %% "frameless-dataset" % "0.8.0"
+val framelessDS         = "org.typelevel" %% "frameless-dataset" % "0.8.0" // todo to test the use of complex types in Spark
 
 
 lazy val commonSettings = Seq(
@@ -78,11 +78,10 @@ lazy val dataModel = appModule("data-model")
   .enablePlugins(CloudflowLibraryPlugin)
   .settings(
     commonSettings,
-    (sourceGenerators in Compile) += (avroScalaGenerateSpecific in Test).taskValue,
-    (avroScalaCustomTypes in Compile) := {
-      avrohugger.format.Standard.defaultTypes.copy(
-        timestampMillis = avrohugger.types.JavaSqlTimestamp,
-        decimal = avrohugger.types.ScalaBigDecimalWithPrecision(None)
+    (sourceGenerators in Compile) += (avroScalaGenerateSpecific in Compile).taskValue,
+    (avroScalaSpecificCustomTypes in Compile) := {
+      avrohugger.format.SpecificRecord.defaultTypes.copy(
+        timestampMillis = avrohugger.types.JavaSqlTimestamp 
       )
     }
   )
@@ -113,7 +112,7 @@ lazy val dataEgress = appModule("data-egress")
       log4jApi,
       log4jSlf4j,
       log4jCore,
-      framelessDS
+      framelessDS  // todo to test the use of complex types in Spark
     )
   )
   .settings(
