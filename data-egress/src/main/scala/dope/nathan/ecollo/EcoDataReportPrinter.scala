@@ -10,7 +10,7 @@ import org.apache.spark.sql.streaming.OutputMode
 
 class EcoDataReportPrinter extends SparkStreamlet {
 
-  System.setProperty("hadoop.home.dir", "C:\\spark-2.4.4-bin-hadoop2.7")
+  System.setProperty("hadoop.home.dir", "C:\\spark-2.4.4-bin-hadoop2.7") // todo make as environment
 
   val in: AvroInlet[EcoData] = AvroInlet[EcoData]("in")
 
@@ -18,7 +18,7 @@ class EcoDataReportPrinter extends SparkStreamlet {
 
   override protected def createLogic(): SparkStreamletLogic = new SparkStreamletLogic() {
     override def buildStreamingQueries: StreamletQueryExecution = {
-      readStream(in).writeStream
+      readStream(in).map{ d => println(d); d }.writeStream // todo println for quick testing
         .format("console")
         .option("checkpointLocation", context.checkpointDir("console-egress"))
         .outputMode(OutputMode.Append())

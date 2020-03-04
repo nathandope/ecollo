@@ -11,25 +11,34 @@
         },
         {
             "name": "location",
-            "type": "dope.nathan.ecollo.dataModels.Location",
+            "type": [
+                "dope.nathan.ecollo.dataModels.Location",
+                "null"
+            ],
             "doc": "Geolocation of event"
         },
         {
             "name": "time",
-            "type": {
-                "type": "long",
-                "logicalType": "timestampMillis"
-            },
+            "type": [
+                "long",
+                "null"
+            ],
             "doc": "Time stamp of event"
         },
         {
             "name": "file",
-            "type": "dope.nathan.ecollo.dataModels.File",
+            "type": [
+                "dope.nathan.ecollo.dataModels.File",
+                "null"
+            ],
             "doc": "File information"
         },
         {
             "name": "description",
-            "type": "string",
+            "type": [
+                "string",
+                "null"
+            ],
             "doc": "Description of event"
         }
     ]

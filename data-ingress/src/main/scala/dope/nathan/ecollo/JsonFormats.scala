@@ -1,19 +1,17 @@
 package dope.nathan.ecollo
 
-import java.util.UUID
+import java.sql.Timestamp
 
 import dope.nathan.ecollo.dataModels.{EcoData, File, Location}
-import spray.json.{DefaultJsonProtocol, JsString, JsValue, JsonFormat, RootJsonFormat, deserializationError}
+import spray.json._
 
-import scala.util.Try
+trait TimestampJsonSupport extends DefaultJsonProtocol {
+  implicit object InstantFormat extends JsonFormat[Timestamp] {
+    def write(timestamp: Timestamp) = JsNumber(timestamp.getTime)
 
-trait UUIDJsonSupport extends DefaultJsonProtocol {
-  implicit object UUIDFormat extends JsonFormat[UUID] {
-    def write(uuid: UUID) = JsString(uuid.toString)
-
-    def read(json: JsValue): UUID = json match {
-      case JsString(uuid) ⇒ Try(UUID.fromString(uuid)).getOrElse(deserializationError(s"Expected valid UUID but got '$uuid'."))
-      case other          ⇒ deserializationError(s"Expected UUID as JsString, but got: $other")
+    def read(json: JsValue): Timestamp = json match {
+      case JsNumber(value) ⇒ new Timestamp(value.longValue())
+      case other           ⇒ deserializationError(s"Expected Timestamp as JsNumber, but got: $other")
     }
   }
 }
@@ -26,7 +24,7 @@ object FileJsonSupport extends DefaultJsonProtocol {
   implicit val fileFormat: RootJsonFormat[File] = jsonFormat4(File.apply)
 }
 
-object EcoDataJsonSupport extends DefaultJsonProtocol with UUIDJsonSupport{
+object EcoDataJsonSupport extends DefaultJsonProtocol with TimestampJsonSupport{
   import FileJsonSupport._
   import LocationJsonSupport._
   implicit val sensorDataFormat: RootJsonFormat[EcoData] = jsonFormat5(EcoData.apply)
