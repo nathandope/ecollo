@@ -11,20 +11,26 @@
         },
         {
             "name": "path",
-            "type": "string",
+            "type": [
+                "string",
+                "null"
+            ],
             "doc": "Absolute path to the file including filename"
         },
         {
             "name": "time",
-            "type": {
-                "type": "long",
-                "logicalType": "timestampMillis"
-            },
+            "type": [
+                "long",
+                "null"
+            ],
             "doc": "File creation time"
         },
         {
             "name": "fileType",
-            "type": "string",
+            "type": [
+                "string",
+                "null"
+            ],
             "doc": "File type"
         }
     ]

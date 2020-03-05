@@ -1,0 +1,48 @@
+{
+    "namespace": "dope.nathan.ecollo.dataModels",
+    "type": "record",
+    "name": "EcoDataSpec",
+    "doc": "Ecological's metadata",
+    "fields": [
+        {
+            "name": "id",
+            "type": "string",
+            "doc": "Data unique identifier"
+        },
+        {
+            "name": "location",
+            "type": [
+                "dope.nathan.ecollo.dataModels.Location",
+                "null"
+            ],
+            "doc": "Geolocation of event"
+        },
+        {
+            "name": "time",
+            "type": [
+                {
+                    "type": "long",
+                    "logicalType": "timestamp-millis"
+                },
+                "null"
+            ],
+            "doc": "Time stamp of event"
+        },
+        {
+            "name": "file",
+            "type": [
+                "dope.nathan.ecollo.dataModels.File",
+                "null"
+            ],
+            "doc": "File information"
+        },
+        {
+            "name": "description",
+            "type": [
+                "string",
+                "null"
+            ],
+            "doc": "Description of event"
+        }
+    ]
+}

@@ -15,6 +15,7 @@ import org.apache.spark.sql.{Dataset, Encoder, Encoders}
 
 class EcoDataReportPrinter extends SparkStreamlet {
 
+  System.setProperty("hadoop.home.dir", "C:\\spark-2.4.4-bin-hadoop2.7") // todo make as environment
   implicit val encoder: Encoder[FooEncoded] = Encoders.product[FooEncoded]
 
   implicit def typedEncoder[T: TypedEncoder]: Encoder[T] = TypedExpressionEncoder[T]
@@ -37,8 +38,6 @@ class EcoDataReportPrinter extends SparkStreamlet {
       NewInstance(classOf[Foo], Seq(time), jvmRepr)
     }
   }
-
-  System.setProperty("hadoop.home.dir", "D:\\spark-2.4.4-bin-hadoop2.7")
 
   val in: AvroInlet[Foo] = AvroInlet[Foo]("in")
   val out: AvroOutlet[FooEncoded] = AvroOutlet[FooEncoded]("out")
