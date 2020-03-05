@@ -83,7 +83,8 @@ lazy val dataModel = appModule("data-model")
     (sourceGenerators in Compile) += (avroScalaGenerateSpecific in Compile).taskValue,
     (avroScalaSpecificCustomTypes in Compile) := {
       avrohugger.format.SpecificRecord.defaultTypes.copy(
-        timestampMillis = avrohugger.types.JavaTimeInstant 
+        timestampMillis = avrohugger.types.JavaTimeInstant,
+        uuid = avrohugger.types.JavaUuid
       )
     }
   )

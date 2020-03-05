@@ -3,7 +3,7 @@ package dope.nathan.ecollo
 import cloudflow.flink.{FlinkStreamlet, FlinkStreamletLogic}
 import cloudflow.streamlets.StreamletShape
 import cloudflow.streamlets.avro.AvroInlet
-import dope.nathan.ecollo.dataModels.{Foo, FooEncoded}
+import dope.nathan.ecollo.dataModels.FooEncoded
 import org.apache.flink.streaming.api.scala._
 
 class DataPrinter extends FlinkStreamlet {

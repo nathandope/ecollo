@@ -1,42 +1,45 @@
 package dope.nathan.ecollo
 
 import java.time.Instant
+import java.util.UUID
 
 import cloudflow.spark.{SparkStreamlet, SparkStreamletLogic, _}
 import cloudflow.streamlets.StreamletShape
 import cloudflow.streamlets.avro.{AvroInlet, AvroOutlet}
 import dope.nathan.ecollo.dataModels.{Foo, FooEncoded}
-import frameless.{TypedEncoder, TypedExpressionEncoder}
-import org.apache.spark.sql.catalyst.expressions.objects.{Invoke, NewInstance}
-import org.apache.spark.sql.catalyst.expressions.{CreateNamedStruct, Expression, GetStructField, Literal}
+import frameless.TypedEncoder.usingInjection
+import frameless.{Injection, TypedEncoder, TypedExpressionEncoder}
+import org.apache.spark.sql.catalyst.expressions.Expression
 import org.apache.spark.sql.streaming.OutputMode
-import org.apache.spark.sql.types.{DataType, LongType, ObjectType}
+import org.apache.spark.sql.types.{DataType, ObjectType}
 import org.apache.spark.sql.{Dataset, Encoder, Encoders}
 
 class EcoDataReportPrinter extends SparkStreamlet {
 
-  System.setProperty("hadoop.home.dir", "C:\\spark-2.4.4-bin-hadoop2.7") // todo make as environment
-  implicit val encoder: Encoder[FooEncoded] = Encoders.product[FooEncoded]
+  System.setProperty("hadoop.home.dir", "D:\\spark-2.4.4-bin-hadoop2.7")
 
   implicit def typedEncoder[T: TypedEncoder]: Encoder[T] = TypedExpressionEncoder[T]
 
-  implicit def uuidTypedEncoder: TypedEncoder[Foo] = new TypedEncoder[Foo] {
+  implicit val typed: Encoder[FooEncoded] = Encoders.product[FooEncoded]
+
+  implicit def fooTypedEncoder: TypedEncoder[Foo] = new TypedEncoder[Foo] {
+
+    implicit val encoder: Injection[Foo, FooEncoded] = new Injection[Foo, FooEncoded] {
+      override def apply(foo: Foo): FooEncoded = FooEncoded(foo.time.getEpochSecond, foo.description.toString)
+      override def invert(fooEncoded: FooEncoded): Foo = Foo(Instant.now(), UUID.fromString(fooEncoded.description))
+    }
+
+    val underlying: TypedEncoder[Foo] = usingInjection[Foo, FooEncoded]
+
     def nullable: Boolean = false
 
     def jvmRepr: DataType = ObjectType(classOf[Foo])
 
     def catalystRepr: DataType = TypedEncoder[FooEncoded].catalystRepr
 
-    def toCatalyst(path: Expression): Expression = {
-      val instant = Invoke(path, "time", ObjectType(classOf[Instant]))
-      val time = Invoke(instant, "getEpochSecond", LongType)
-      CreateNamedStruct(Seq(Literal("time"), time))
-    }
+    def toCatalyst(path: Expression): Expression = underlying.toCatalyst(path)
 
-    def fromCatalyst(path: Expression): Expression = {
-      val time = GetStructField(path, 0, Some("time"))
-      NewInstance(classOf[Foo], Seq(time), jvmRepr)
-    }
+    def fromCatalyst(path: Expression): Expression = underlying.fromCatalyst(path)
   }
 
   val in: AvroInlet[Foo] = AvroInlet[Foo]("in")
@@ -48,7 +51,7 @@ class EcoDataReportPrinter extends SparkStreamlet {
 
     override def buildStreamingQueries: StreamletQueryExecution = {
       val stream: Dataset[Foo] = readStream(in)
-      val fooEncoded = stream.select("time").as[FooEncoded]
+      val fooEncoded = stream.select("time", "description").as[FooEncoded]
       writeStream(fooEncoded, out, OutputMode.Append).toQueryExecution
     }
   }

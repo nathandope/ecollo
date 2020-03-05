@@ -1,5 +1,7 @@
 package dope.nathan.ecollo
 
+import java.util.UUID
+
 import cloudflow.flink.{FlinkStreamlet, FlinkStreamletLogic}
 import cloudflow.streamlets.StreamletShape
 import cloudflow.streamlets.avro.{AvroInlet, AvroOutlet}
@@ -20,7 +22,7 @@ class EcoDataMediator extends FlinkStreamlet {
       override def buildExecutionGraph(): Unit = {
         val data: DataStream[EcoData] = readStream(in)
 
-        val encoded = data.map { _ => Foo(java.time.Instant.now()) }
+        val encoded = data.map { _ => Foo(java.time.Instant.now(), UUID.randomUUID()) }
 
         writeStream(out, encoded)
       }

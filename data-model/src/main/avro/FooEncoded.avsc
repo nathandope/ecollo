@@ -8,6 +8,11 @@
             "name": "time",
             "type": "long",
             "doc": "Time stamp of event"
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "doc": "UUID"
         }
     ]
 }

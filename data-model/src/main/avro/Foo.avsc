@@ -11,6 +11,14 @@
                 "logicalType": "timestamp-millis"
             },
             "doc": "Time stamp of event"
+        },
+        {
+            "name": "description",
+            "type": {
+                 "type": "string",
+                 "logicalType": "uuid"
+            },
+            "doc": "UUID"
         }
     ]
 }
