@@ -62,7 +62,9 @@ lazy val root =
       ecolloLoadingPipeline,
       dataModel,
       dataIngress,
-      dataEgress
+      dataEgress,
+      dataMediator,
+      dataPrinter
     )
 
 lazy val ecolloLoadingPipeline = appModule("ecollo-loading-pipeline")
@@ -72,18 +74,16 @@ lazy val ecolloLoadingPipeline = appModule("ecollo-loading-pipeline")
     name := "ecollo-loading-pipeline",
     runLocalConfigFile := Some("resources/local.conf")
   )
-  .dependsOn(dataIngress, dataEgress)
+  .dependsOn(dataIngress, dataEgress, dataMediator, dataPrinter)
 
 lazy val dataModel = appModule("data-model")
   .enablePlugins(CloudflowLibraryPlugin)
   .settings(
     commonSettings,
-    (sourceGenerators in Compile) += (avroScalaGenerateSpecific in Test).taskValue,
-    (avroScalaCustomTypes in Compile) := {
-      avrohugger.format.Standard.defaultTypes.copy(
-        timestampMillis = avrohugger.types.JavaSqlTimestamp,
-        decimal = avrohugger.types.ScalaBigDecimalWithPrecision(None)
-      )
+    (sourceGenerators in Compile) += (avroScalaGenerateSpecific in Compile).taskValue,
+    (avroScalaSpecificCustomTypes in Compile) := {
+      avrohugger.format.SpecificRecord.defaultTypes.copy(
+        timestampMillis = avrohugger.types.JavaTimeInstant)
     }
   )
 
@@ -114,6 +114,36 @@ lazy val dataEgress = appModule("data-egress")
       log4jSlf4j,
       log4jCore,
       framelessDS
+    )
+  )
+  .settings(
+    parallelExecution in Test := false
+  )
+  .dependsOn(dataModel)
+
+lazy val dataMediator = appModule("data-mediator")
+  .enablePlugins(CloudflowFlinkLibraryPlugin)
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      log4jApi,
+      log4jSlf4j,
+      log4jCore
+    )
+  )
+  .settings(
+    parallelExecution in Test := false
+  )
+  .dependsOn(dataModel)
+
+lazy val dataPrinter = appModule("data-printer")
+  .enablePlugins(CloudflowFlinkLibraryPlugin)
+  .settings(
+    commonSettings,
+    libraryDependencies ++= Seq(
+      log4jApi,
+      log4jSlf4j,
+      log4jCore
     )
   )
   .settings(

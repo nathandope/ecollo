@@ -1,0 +1,16 @@
+{
+    "namespace": "dope.nathan.ecollo.dataModels",
+    "type": "record",
+    "name": "Foo",
+    "doc": "Foo",
+    "fields": [
+        {
+            "name": "time",
+            "type": {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+            },
+            "doc": "Time stamp of event"
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+{
+    "namespace": "dope.nathan.ecollo.dataModels",
+    "type": "record",
+    "name": "FooEncoded",
+    "doc": "FooEncoded",
+    "fields": [
+        {
+            "name": "time",
+            "type": "long",
+            "doc": "Time stamp of event"
+        }
+    ]
+}

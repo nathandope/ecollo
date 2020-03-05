@@ -1,19 +1,17 @@
 package dope.nathan.ecollo
 
-import java.util.UUID
+import java.time.Instant
 
 import dope.nathan.ecollo.dataModels.{EcoData, File, Location}
-import spray.json.{DefaultJsonProtocol, JsString, JsValue, JsonFormat, RootJsonFormat, deserializationError}
+import spray.json._
 
-import scala.util.Try
+trait InstantJsonSupport extends DefaultJsonProtocol {
+  implicit object InstantFormat extends JsonFormat[Instant] {
+    def write(instant: Instant) = JsNumber(instant.getEpochSecond)
 
-trait UUIDJsonSupport extends DefaultJsonProtocol {
-  implicit object UUIDFormat extends JsonFormat[UUID] {
-    def write(uuid: UUID) = JsString(uuid.toString)
-
-    def read(json: JsValue): UUID = json match {
-      case JsString(uuid) ⇒ Try(UUID.fromString(uuid)).getOrElse(deserializationError(s"Expected valid UUID but got '$uuid'."))
-      case other          ⇒ deserializationError(s"Expected UUID as JsString, but got: $other")
+    def read(json: JsValue): Instant = json match {
+      case JsNumber(_) ⇒ Instant.now()
+      case other           ⇒ deserializationError(s"Expected Timestamp as JsNumber, but got: $other")
     }
   }
 }
@@ -26,7 +24,7 @@ object FileJsonSupport extends DefaultJsonProtocol {
   implicit val fileFormat: RootJsonFormat[File] = jsonFormat4(File.apply)
 }
 
-object EcoDataJsonSupport extends DefaultJsonProtocol with UUIDJsonSupport{
+object EcoDataJsonSupport extends DefaultJsonProtocol with InstantJsonSupport{
   import FileJsonSupport._
   import LocationJsonSupport._
   implicit val sensorDataFormat: RootJsonFormat[EcoData] = jsonFormat5(EcoData.apply)

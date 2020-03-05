@@ -1,7 +1,7 @@
 {
     "namespace": "dope.nathan.ecollo.dataModels",
     "type": "record",
-    "name": "EcoData",
+    "name": "EcoDataEncoded",
     "doc": "Ecological's metadata",
     "fields": [
         {
@@ -16,10 +16,7 @@
         },
         {
             "name": "time",
-            "type": {
-                "type": "long",
-                "logicalType": "timestamp-millis"
-            },
+            "type": "long",
             "doc": "Time stamp of event"
         },
         {
